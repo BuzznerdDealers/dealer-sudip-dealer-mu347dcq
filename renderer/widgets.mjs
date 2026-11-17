@@ -406,6 +406,19 @@ function locationsPinmap(config, snapshot, ctx) {
   );
 }
 
+/**
+ * The department a phone number belongs to, as the dealer's own department code
+ * (`departmentCode` on the row, from the department record). The analytics
+ * runtime reads it off the link for a click-to-call; a provider with its own
+ * department words maps the code through the dealer's mapping, never here.
+ * Absent when the row does not say: a guess would put a made-up department on
+ * the wire.
+ */
+function departmentAttr(row) {
+  const code = row && typeof row.departmentCode === 'string' ? row.departmentCode.trim() : '';
+  return code ? { 'data-bz-department': code } : {};
+}
+
 function staff(config, snapshot) {
   const people = (snapshot && snapshot.staff) || [];
   const cards = people.map(
@@ -414,9 +427,10 @@ function staff(config, snapshot) {
         p.name,
       )}</span>${p.title ? `<span class="bz-person__t">${esc(p.title)}</span>` : ''}${
         p.phone
-          ? `<a class="bz-person__p" href="tel:${esc(p.phone.replace(/[^+\d]/g, ''))}"${attrs(
-              tagAttrs('phone', 'call-staff'),
-            )}>${esc(p.phone)}</a>`
+          ? `<a class="bz-person__p" href="tel:${esc(p.phone.replace(/[^+\d]/g, ''))}"${attrs({
+              ...tagAttrs('phone', 'call-staff'),
+              ...departmentAttr(p),
+            })}>${esc(p.phone)}</a>`
           : ''
       }</li>`,
   );
@@ -474,7 +488,9 @@ function phoneNumbers(config, snapshot) {
             (n) =>
               `<li class="bz-phone"><span class="bz-phone__l">${esc(n.label)}</span><a href="tel:${esc(
                 String(n.number).replace(/[^+\d]/g, ''),
-              )}"${attrs(tagAttrs('phone', 'call-department'))}>${esc(n.number)}</a></li>`,
+              )}"${attrs({ ...tagAttrs('phone', 'call-department'), ...departmentAttr(n) })}>${esc(
+                n.number,
+              )}</a></li>`,
           ),
           '',
         )}</ul>`

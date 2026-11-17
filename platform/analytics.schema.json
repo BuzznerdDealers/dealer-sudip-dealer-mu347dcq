@@ -80,7 +80,7 @@
         },
         "pageCall": {
           "type": "array",
-          "description": "Leading arguments of the page call. The page facts and this dealer's settings are appended as one object."
+          "description": "Leading arguments of the page call. The page object — pageData (or, without it, this dealer's settings), the page facts and this provider's own payload for the page — is appended last."
         },
         "readyCall": {
           "type": "array",
@@ -96,6 +96,20 @@
           "type": "object",
           "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } },
           "description": "Platform page-fact name -> a map from the platform's own words to this vendor's. The storefront derives a page's kind from its route and knows no provider, so it emits a platform kind and this translates it. A value with no entry passes through untouched, which is what lets a brand-site page authored in the vendor's own vocabulary work through the same path."
+        },
+        "pageAllowed": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } },
+          "description": "Platform page-fact name -> the values this vendor accepts. A value pageValues does not map and that is not in the list is not sent, so an unmapped platform kind never reaches a vendor that would drop it while an authored vendor value still passes. Absent: every value passes."
+        },
+        "pageData": {
+          "type": "object",
+          "description": "Static page properties, already in the vendor's names. When present, the provider's settings are not copied into the page object; settings then belong to the adapter alone. Absent: settings are the page properties."
+        },
+        "runtimeKeys": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Values only the browser knows: platform name -> this vendor's key. Only sessionId exists — the platform's visit id, the bz_sid cookie, created if this is the visit's first page. Other names are ignored."
         }
       }
     }
