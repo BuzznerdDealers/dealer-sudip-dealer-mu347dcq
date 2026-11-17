@@ -168,7 +168,10 @@
 // library the site loads, or onto an image, and the build publishes it in
 // `/partials/manifest.json` as `icons`. Unmapped slots keep the storefront's own
 // characters; a site with no file publishes no `icons` and nothing changes.
-export const RENDERER_VERSION = '4.25.0';
+// 4.25.1 — a form field interaction carries the field's own name as `fieldName`, not
+// `formFieldName`. That key is a provider's word for the field, which only the dealer
+// chooses (the field's annotations); a field they have not named is not reported to it.
+export const RENDERER_VERSION = '4.25.1';
 
 export {
   LOCATION_SOURCE,

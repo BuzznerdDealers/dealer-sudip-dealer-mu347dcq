@@ -567,9 +567,10 @@
   }
 
   /* The field's own name, used to fire `form_field_interaction` once per field
-   * and as the fallback `formFieldName` for a provider the dealer did not map
-   * this field for. Its real name, never a value guessed at from a vocabulary
-   * this file does not have. */
+   * and sent as `fieldName`, the platform's record of which field was touched.
+   * Never as `formFieldName`: that is the name a provider knows the field by,
+   * which only the dealer chooses, and it arrives in the field's annotations.
+   * A field the dealer has not named is not reported to that provider. */
   function fieldName(field) {
     return field.getAttribute('name') || field.getAttribute('id') || 'other';
   }
@@ -604,7 +605,7 @@
          * table by an order of magnitude and tell us nothing more. */
         if (touched[name]) return;
         touched[name] = true;
-        track('form_field_interaction', assign(fieldContext(form, field), { formFieldName: name }));
+        track('form_field_interaction', assign(fieldContext(form, field), { fieldName: name }));
       },
       true,
     );
